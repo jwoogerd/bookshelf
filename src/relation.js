@@ -30,11 +30,13 @@ export default RelationBase.extend({
     if (this.type === 'morphTo' && !parent._isEager) {
       // If the parent object is eager loading, and it's a polymorphic `morphTo` relation,
       // we can't know what the target will be until the models are sorted and matched.
-      this.target = Helpers.morphCandidate(this.candidates, this.parentAttributes[this.key('morphKey')]);
-      this.targetTableName   = _.result(this.target.prototype, 'tableName');
+      const morphTarget = this.parentAttributes[this.key('morphKey')];
+      if (morphTarget) {
+        this.target = Helpers.morphCandidate(this.candidates, morphTarget);
+        this.targetTableName   = _.result(this.target.prototype, 'tableName');
+        this.targetIdAttribute = this.attribute('targetIdAttribute', parent);
+      }
     }
-
-    this.targetIdAttribute = this.attribute('targetIdAttribute', parent);
     this.parentFk = this.attribute('parentFk');
 
     const target = this.target ? this.relatedInstance() : {};

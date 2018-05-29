@@ -46,6 +46,7 @@ export default class EagerRelation extends EagerBase {
     ] = columnNames;
 
     const parentsByType = _.groupBy(this.parent, model => model.get(typeColumn));
+    delete parentsByType['undefined'];
     const TargetByType = _.mapValues(parentsByType, (parents, type) =>
       Helpers.morphCandidate(relatedData.candidates, type)
     );
